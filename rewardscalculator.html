@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="en">
+<head> <!--links connecting CSS and making icons, py-script and bootstrap work in website.-->
+	<title>SOAR</title>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+	<link rel="stylesheet" href="mystylesheet.css">
+	<script type="module" src="https://pyscript.net/releases/2024.1.1/core.js"></script>
+
+</head>
+
+<body onload="timerForLoader()">
+
+<header>
+	<div>
+	    <!--Schoo logo that is also a link home with a popover that tells this. -->
+		<a href="index.html" title="Home" data-toggle="popover" data-trigger="hover" data-content="Some content"><img class="logo" alt="Rangiora New life School logo" src="images/rnlslogo.png" ></a>
+	</div>
+
+	<div>
+		<h2> Rangiora New Life School Te Kura Oranga Hou Ō Rangiora </h2> <!--Title -->
+		<h1>SOAR Values and Rewards </h1>
+	</div>
+</header>
+
+
+<img class="flaxpattern" alt="flax weave pattern"  src="images/flaxweave.jpg" >
+
+<nav class="navbar navbar-expand-lg navbar-dark"> <!--Classes for bootstrap navbar. Setting size and design. -->
+ 
+    <button style="height:60px; font-size:32px; background-color:#0E2C73;" class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#collapsibleNavbar">
+	
+      <span class="navbar-toggler-icon"></span>
+      <span class="menu-navigation">Menu</span>
+    </button>
+    <div class="collapse navbar-collapse" id="collapsibleNavbar"> <!--Collapsing navbar when page made smaller. -->
+    
+    <!--Navigation Menu links connecting to other pages -->
+ 	<ul>
+		<li> <a href="index.html"> <i class="material-icons">home</i>Home</a></li>
+		<li> <a href="supportive.html"> <i class="material-icons">diversity_3</i> Supportive </a></li>
+		<li> <a href="organised.html"> <i class="material-icons">schedule</i> Organised </a></li>
+		<li> <a href="achievers.html"> <i class="material-icons">done_outline</i> Achievers </a></li>
+		<li> <a href="respectful.html"> <i class="material-icons">handshake</i> Respectful </a></li>
+		<li> <a class="active" href="rewardscalculator.html"> <i class="material-icons">workspace_premium</i> Rewards Calculator </a></li>
+   </ul>
+  </div>
+</nav>
+
+
+<!--Article with the rewards calculator and information. Also has a loader while rewards calculator loads. -->
+<article>
+
+	<h1 class="rewards-calculator-heading"> Rewards Calculator </h1>
+
+	<div id="loader"></div> <!--loading circle -->
+	
+	<div id="loading-text"> <!--Text visible while loader shows then dissapears. -->
+		<p>The Rewards Calculator is loading.<br>Thank you for your patience.</p>
+	</div>
+
+	<div style="display:none;" id="animation-content" class="text-appear"> <!--Content appears after loader finished. -->
+
+
+
+		<p> For every 100 SOAR points you can claim rewards. Look on the student portal <a target="_blank" href="https://rnls.school.kiwi/">rnls.school.kiwi</a> to check how many SOAR Points you have. Put your points into the calculator below to see what rewards you can get. Check the school notices to see where to claim your rewards.</p>
+
+
+		<!--Audio recording of information on the page. -->
+		<audio controls >
+		  <source src="audio/rewards.mp3" type="audio/mpeg">
+		Your browser does not support the audio element.
+		</audio>	 	
+
+		
+		<p><b>How many SOAR Points do you have? </b></p>
+		
+		<input type="text" name="user_number" id="user_number" placeholder="e.g. 145"> <!--Rewards Calculator input -->
+
+		<button py-click="main">Calculate Rewards</button> <!--Calls python code when button clicked. -->
+		
+
+			
+
+	</div>
+
+
+</article>
+
+
+<article>
+	<!--Article where rewards will be displayed. -->
+	<h2>Your Rewards:</h2>
+
+	<div id="output1" class="pythonoutput"></div> 
+
+	<ul><div id="outputrewards" class="rewards"></div></ul>
+</article>
+
+<footer>
+<p>Isaiah 40:31 "But those who hope in the Lord will renew their strength. They will soar on wings like eagles; they will run and not grow weary, they will walk and not be faint." <br> "Tena ko te hunga e tatari ana ki a Ihowa, puta hou ana he kaha mo ratou; kake ana ratou ki runga; ko nga parirau, koia ano kei o nga ekara; ka rere ratou, a e kore e mauiui; ka haere, a e kore e ngenge." </p>
+</footer>
+
+
+	
+<!--Pyscript code to calculate rewards.  -->
+<py-script style="display:none;">
+
+    from pyscript import document #allows python to work with HTML taking inputs and printing outputs
+ 
+    def integer_checker(user_number):
+	while True:
+		try:
+			number = int(user_number)
+			break
+		except ValueError:
+			return "no"
+	return "yes"
+
+    
+    def rounder (user_number):
+        '''This function will round down the number given to the multiple of 100. '''
+        
+        user_number_integer = int(user_number)   
+        
+        points = user_number_integer - user_number_integer %100  
+        #calculates down to multiple of 100 by subtracting the difference between the number and the multiple of 100.
+        
+        return points
+    
+    def main(event):
+    
+      
+        '''This function calculates rewards a person can have. '''
+      
+        user_number_text = document.querySelector("#user_number")
+        user_number = user_number_text.value.strip()
+    
+        
+    
+        correct_number = integer_checker(user_number)
+        
+        if correct_number == "yes":
+        
+            points = rounder(user_number) #rounds points
+            
+            
+            if points <= 0:
+                output1_div = document.querySelector("#output1")
+                output1_div.innerText = ("Sorry, you don't have enough SOAR points yet. \n Keep showing the SOAR values to earn more points. When you have 100 points, come back to calculate your rewards!")
+                outputrewards_div = document.querySelector("#outputrewards")
+                outputrewards_div.innerText = ( " " )
+                
+            elif points %300 == 0: #If points is in the 300 section.
+                output1_div = document.querySelector("#output1")
+                output1_div.innerText = ("You can choose 3 from:")
+                outputrewards_div = document.querySelector("#outputrewards")
+                outputrewards_div.innerText = ( "\u2022 A pizza \n \u2022 A hot chocolate voucher \n \u2022 A drink \n \u2022 An ice cream \n \u2022 A non-uniform day \n \u2022 A letter home from Mr Walters " )
+        
+                
+            elif points %300 == 200: #If points is in the 200 section.
+                output1_div = document.querySelector("#output1")
+                output1_div.innerText = ("You can choose 2 from:")
+                outputrewards_div = document.querySelector("#outputrewards")
+                outputrewards_div.innerText = ( "\u2022 A hot chocolate voucher \n \u2022 A drink \n\u2022  An ice cream \n \u2022 A non-uniform day \n \u2022 A letter home from Mr Masterton " )
+                    
+            else:
+                output1_div = document.querySelector("#output1")
+                output1_div.innerText = ("You can choose 1 from:")
+                outputrewards_div = document.querySelector("#outputrewards")
+                outputrewards_div.innerText = ( "\u2022 A hot chocolate voucher \n \u2022 A drink \n \u2022 An ice cream \n \u2022 A non-uniform day \n \u2022 A letter home from your teacher " )
+        
+        else:
+            output1_div = document.querySelector("#output1")
+            output1_div.innerText = ("Sorry, that was not an integer so your rewards couldn't be calculated.\n Please try again with a whole number.")  
+            outputrewards_div = document.querySelector("#outputrewards")
+            outputrewards_div.innerText = ( " " )
+
+ 
+</py-script>
+
+
+
+<!--Code for loader and text with the loading. -->
+<script>
+
+function timerForLoader() {
+	 var time;
+	 time = setTimeout(showPage, 1500); //calling function to make loader dissapear and text appear after 5 seconds
+}
+
+function showPage() {
+	 document.getElementById("loader").style.display = "none"; //loader dissapears
+	 document.getElementById("loading-text").style.display = "none"; //text under loader dissapears.
+	 document.getElementById("animation-content").style.display = "block"; //Text and rewards calculator appear.
+}
+</script>
+
+
+</body>
+
+</html>
